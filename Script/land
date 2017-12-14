@@ -73,12 +73,9 @@ WAIT 5.
 
 PRINT "falling to 2km".
 
-//LOCK STEERING TO SHIP:RETROGRADE.
-UNTIL ALT:RADAR < 1930 {
+UNTIL ALT:RADAR < 1930.0 {
     WAIT 0.1.
 }
-
-
 
 PRINT "deceleration burn - stage 1 - 3.3g".
 LOCK dthrott TO 0.05 * (3.3 - gforce).
@@ -123,3 +120,7 @@ PRINT "touchdown".
 
 SET thrott to 0.
 SET dthrott to 0.
+
+// retract air brakes +style
+WAIT 10.
+BRAKES OFF.
