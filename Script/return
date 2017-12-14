@@ -1,10 +1,112 @@
 CLEARSCREEN.
 
-PRINT "coast".
+PRINT "coasting to deorbit burn".
 
-UNTIL 90 < SHIP:GEOPOSITION:LNG AND SHIP:GEOPOSITION:LNG < 120 {
+LOCK STEERING TO SHIP:RETROGRADE.
+
+UNTIL 155 < SHIP:GEOPOSITION:LNG AND SHIP:GEOPOSITION:LNG < 165 {
     PRINT SHIP:GEOPOSITION:LNG.
     WAIT 0.1.
 }
 
-PRINT "coast".
+PRINT "deorbit burn".
+SET thrott TO 0.0.
+SET dthrott TO 0.
+LOCK THROTTLE TO thrott.
+
+SET g TO KERBIN:MU / KERBIN:RADIUS^2.
+LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
+LOCK gforce TO accvec:MAG / g.
+
+LOCK dthrott TO 0.05 * (1.0 - gforce).
+
+UNTIL SHIP:PERIAPSIS < 20000 {
+    SET thrott to thrott + dthrott.
+    WAIT 0.1.
+}
+
+
+PRINT "engine shutdown".
+SET thrott TO 0.0.
+
+
+PRINT "orient for reentry".
+LOCK STEERING TO SHIP:UP + R(0,0,270).
+
+
+PRINT "coast to 47.5km".
+UNTIL SHIP:ALTITUDE < 47500 {
+    WAIT 0.1.
+}
+
+
+PRINT "orient retrograde".
+LOCK STEERING TO SHIP:RETROGRADE.
+
+PRINT "coast to 17km".
+UNTIL SHIP:ALTITUDE < 17000 {
+    WAIT 0.1.
+}
+
+PRINT "deploying brakes".
+BRAKES ON.
+
+
+
+
+
+PRINT "falling to 2km".
+LOCK STEERING TO (-1.0) * VELOCITY:SURFACE.
+
+UNTIL ALT:RADAR < 1800.0 {
+    WAIT 0.1.
+}
+
+PRINT "deceleration burn - stage 1 - 3.3g".
+LOCK dthrott TO 0.05 * (3.3 - gforce).
+
+UNTIL SHIP:VELOCITY:SURFACE:MAG < 50 {
+    SET thrott to thrott + dthrott.
+    WAIT 0.1.
+}
+
+
+PRINT "deceleration burn - stage 2 - 1.7g".
+LOCK dthrott TO 0.05 * (1.7 - gforce).
+
+UNTIL SHIP:VELOCITY:SURFACE:MAG < 20 {
+    SET thrott to thrott + dthrott.
+    WAIT 0.1.
+}
+
+LOCK STEERING TO SHIP:UP.
+
+PRINT "deceleration burn - stage 3 - 1.1g".
+LOCK dthrott TO 0.05 * (1.1 - gforce).
+
+GEAR ON.
+
+UNTIL SHIP:VELOCITY:SURFACE:MAG < 5 {
+    SET thrott to thrott + dthrott.
+    WAIT 0.1.
+
+}
+
+
+PRINT "landing burn - stage 4 - 1g".
+LOCK dthrott TO 0.05 * (1.0 - gforce).
+
+UNTIL ALT:RADAR < 20 {
+    SET thrott to thrott + dthrott.
+    PRINT ALT:RADAR.
+    WAIT 0.1.
+}
+
+PRINT "touchdown".
+
+SET thrott to 0.
+SET dthrott to 0.
+
+// retract air brakes +style
+WAIT 10.
+BRAKES OFF.
