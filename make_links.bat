@@ -1,0 +1,2 @@
+cmd /c mklink "D:\Steam\SteamApps\common\Kerbal Space Program\saves\blehh\Ships\VAB\bfr.craft" "C:\Users\Sergiy\Desktop\kerbal\Vehicle\bfr.craft"
+cmd /c mklink /d "D:\Steam\SteamApps\common\Kerbal Space Program\Ships\Script" "C:\Users\Sergiy\Desktop\kerbal\Script"
