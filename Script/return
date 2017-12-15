@@ -2,6 +2,16 @@ CLEARSCREEN.
 
 PRINT "coasting to deorbit burn".
 
+PRINT "start warp".
+set kuniverse:timewarp:rate to 100.
+UNTIL 145 < SHIP:GEOPOSITION:LNG AND SHIP:GEOPOSITION:LNG < 150 {
+    PRINT SHIP:GEOPOSITION:LNG.
+    WAIT 0.1.
+}
+kuniverse:timewarp:cancelwarp().
+PRINT "stop warp".
+
+
 LOCK STEERING TO SHIP:RETROGRADE.
 
 UNTIL 155 < SHIP:GEOPOSITION:LNG AND SHIP:GEOPOSITION:LNG < 165 {
@@ -30,12 +40,42 @@ PRINT "engine shutdown".
 SET thrott TO 0.0.
 
 
+PRINT "retracting solar arrays".
+AG4 OFF.
+
+
+
+
 PRINT "orient for reentry".
 LOCK STEERING TO SHIP:UP + R(0,0,270).
 
+WAIT 30.
 
-PRINT "coast to 47.5km".
-UNTIL SHIP:ALTITUDE < 47500 {
+
+PRINT "coast to 47.2km".
+
+PRINT "start warp - coast to atmosphere".
+set kuniverse:timewarp:rate to 100.
+UNTIL SHIP:ALTITUDE < 75000 {
+    WAIT 0.1.
+}
+
+PRINT "stop warp - atmospheric entry".
+kuniverse:timewarp:cancelwarp().
+
+
+UNTIL SHIP:ALTITUDE < 68000 {
+    WAIT 0.1.
+}
+
+PRINT "start warp - warp in atmosphere".
+set kuniverse:timewarp:rate to 4.
+UNTIL SHIP:ALTITUDE < 55000 {
+    WAIT 0.1.
+}
+
+
+UNTIL SHIP:ALTITUDE < 47200 {
     WAIT 0.1.
 }
 
@@ -48,8 +88,14 @@ UNTIL SHIP:ALTITUDE < 17000 {
     WAIT 0.1.
 }
 
+kuniverse:timewarp:cancelwarp().
+PRINT "stop warp".
+
+WAIT 5.
+
 PRINT "deploying brakes".
 BRAKES ON.
+
 
 
 
@@ -58,7 +104,7 @@ BRAKES ON.
 PRINT "falling to 2km".
 LOCK STEERING TO (-1.0) * VELOCITY:SURFACE.
 
-UNTIL ALT:RADAR < 1800.0 {
+UNTIL ALT:RADAR < 1700.0 {
     WAIT 0.1.
 }
 

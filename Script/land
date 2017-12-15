@@ -1,7 +1,7 @@
 CLEARSCREEN.
 
 PRINT "boostback turnaround".
-AG1 ON.
+AG3 ON.
 RCS ON.
 
 SET TARGET_VECTOR TO HEADING(270,0).
@@ -49,7 +49,11 @@ UNTIL SHIP:GROUNDSPEED > 23 {
 
 
 PRINT "coasting to apogee".
-BRAKES ON.
+
+
+PRINT "start warp".
+set kuniverse:timewarp:rate to 100.
+
 
 
 SET thrott TO 0.0.
@@ -61,17 +65,25 @@ LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
 LOCK gforce TO accvec:MAG / g.
 
 
-//LOCK STEERING TO SHIP:UP.
-SET TARGET_VECTOR TO HEADING(0,90).
+LOCK STEERING TO SHIP:UP.
+
 
 UNTIL SHIP:VERTICALSPEED < 5 {
     WAIT 0.1.
 }
 
 PRINT "apogee".
-WAIT 5.
+WAIT 30.
 
 PRINT "falling to 2km".
+BRAKES ON.
+LOCK STEERING TO (-1.0) * VELOCITY:SURFACE.
+
+UNTIL ALT:RADAR < 10000 {
+    WAIT 0.1.
+}
+kuniverse:timewarp:cancelwarp().
+PRINT "stop warp".
 
 UNTIL ALT:RADAR < 1930.0 {
     WAIT 0.1.
@@ -99,6 +111,7 @@ PRINT "deceleration burn - stage 3 - 1.1g".
 LOCK dthrott TO 0.05 * (1.1 - gforce).
 
 GEAR ON.
+LOCK STEERING TO SHIP:UP.
 
 UNTIL SHIP:VELOCITY:SURFACE:MAG < 5 {
     SET thrott to thrott + dthrott.
