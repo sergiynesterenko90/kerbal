@@ -17,7 +17,7 @@ STAGE.
 PRINT "launch".
 
 
-WHEN SHIP:ALTITUDE > 2000 THEN {
+WHEN SHIP:ALTITUDE > 1000 THEN {
     SET g TO KERBIN:MU / KERBIN:RADIUS^2.
     LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
     LOCK gforce TO accvec:MAG / g.
@@ -62,6 +62,8 @@ UNTIL SHIP:APOAPSIS > 80000 {
 
 SET thrott to 0.
 SET dthrott to 0.
+WAIT 1.
+
 STAGE.
 PRINT "coasting to apogee".
 
