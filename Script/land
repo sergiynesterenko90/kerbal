@@ -5,7 +5,7 @@ AG3 ON.
 RCS ON.
 
 SET TARGET_VECTOR TO HEADING(270,0).
-LOCK STEERING TO R(0,0,90) + TARGET_VECTOR.
+LOCK STEERING TO R(0,0,180) + TARGET_VECTOR.
 
 LOCK ANGLE TO VANG(TARGET_VECTOR:FOREVECTOR, SHIP:FACING:FOREVECTOR).
 LOCK ROTATION_SPEED TO SHIP:ANGULARVEL:MAG.
@@ -40,7 +40,7 @@ PRINT "reversed direction".
 
 LOCK THROTTLE to 1.0.
 
-UNTIL SHIP:GROUNDSPEED > 23 {
+UNTIL SHIP:GROUNDSPEED > 28 {
     PRINT SHIP:GROUNDSPEED.
     WAIT 0.1.
 }
@@ -65,7 +65,7 @@ LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
 LOCK gforce TO accvec:MAG / g.
 
 
-LOCK STEERING TO SHIP:UP.
+LOCK STEERING TO R(0,0,270) + SHIP:UP.
 
 
 UNTIL SHIP:VERTICALSPEED < 5 {
@@ -75,7 +75,7 @@ UNTIL SHIP:VERTICALSPEED < 5 {
 PRINT "apogee".
 WAIT 30.
 
-PRINT "falling to 2km".
+PRINT "falling to 2.5km".
 BRAKES ON.
 LOCK STEERING TO (-1.0) * VELOCITY:SURFACE.
 
@@ -85,12 +85,20 @@ UNTIL ALT:RADAR < 10000 {
 kuniverse:timewarp:cancelwarp().
 PRINT "stop warp".
 
-UNTIL ALT:RADAR < 1930.0 {
+UNTIL ALT:RADAR < 2000.0 {
     WAIT 0.1.
 }
 
-PRINT "deceleration burn - stage 1 - 3.3g".
-LOCK dthrott TO 0.05 * (3.3 - gforce).
+PRINT "deceleration burn - stage 1 - 4.5g".
+LOCK dthrott TO 0.05 * (4.5 - gforce).
+
+UNTIL SHIP:VELOCITY:SURFACE:MAG < 100 {
+    SET thrott to thrott + dthrott.
+    WAIT 0.1.
+}
+
+PRINT "deceleration burn - stage 2 - 3g".
+LOCK dthrott TO 0.05 * (3.0 - gforce).
 
 UNTIL SHIP:VELOCITY:SURFACE:MAG < 50 {
     SET thrott to thrott + dthrott.
@@ -98,7 +106,7 @@ UNTIL SHIP:VELOCITY:SURFACE:MAG < 50 {
 }
 
 
-PRINT "deceleration burn - stage 2 - 1.7g".
+PRINT "deceleration burn - stage 3 - 1.7g".
 LOCK dthrott TO 0.05 * (1.7 - gforce).
 
 UNTIL SHIP:VELOCITY:SURFACE:MAG < 20 {
@@ -107,11 +115,11 @@ UNTIL SHIP:VELOCITY:SURFACE:MAG < 20 {
 }
 
 
-PRINT "deceleration burn - stage 3 - 1.1g".
+PRINT "deceleration burn - stage 4 - 1.1g".
 LOCK dthrott TO 0.05 * (1.1 - gforce).
 
 GEAR ON.
-LOCK STEERING TO SHIP:UP.
+LOCK STEERING TO R(0,0,90) + SHIP:UP.
 
 UNTIL SHIP:VELOCITY:SURFACE:MAG < 5 {
     SET thrott to thrott + dthrott.
