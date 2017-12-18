@@ -47,7 +47,7 @@ WHEN SHIP:ALTITUDE > 1000 THEN {
                     SET thrott TO 0.
                     SET dthrott TO 0.
 
-                    LOCK STEERING TO R(0,0,180) + HEADING(90,00).
+                    LOCK STEERING TO R(0,0,0) + HEADING(90,00).
                 }
 
             }
@@ -78,7 +78,18 @@ PRINT "stop warp".
 
 WHEN SHIP:ALTITUDE > 75000 THEN {
     SET dthrott TO 0.05 * (5.0 - gforce).
-    LOCK STEERING TO R(0,0,180) + HEADING(90,00).
+    LOCK STEERING TO R(0,0,0) + HEADING(90,00).
+    PRINT "circularizing".
+}
+
+UNTIL SHIP:PERIAPSIS > -10000 {
+    SET thrott to thrott + dthrott.
+    WAIT 0.1.
+}
+
+WHEN SHIP:ALTITUDE > 75000 THEN {
+    SET dthrott TO 0.05 * (0.5 - gforce).
+    LOCK STEERING TO R(0,0,0) + HEADING(90,00).
     PRINT "circularizing".
 }
 
