@@ -1,10 +1,6 @@
 CLEARSCREEN.
 
 
-WHEN STAGE:LIQUIDFUEL < 0.1 THEN {
-    STAGE.
-    PRESERVE.
-}
 
 SET thrott TO 1.0.
 SET dthrott TO 0.
@@ -17,7 +13,7 @@ STAGE.
 PRINT "launch".
 
 
-WHEN SHIP:ALTITUDE > 1000 THEN {
+WHEN SHIP:ALTITUDE > 160 THEN {
     SET g TO KERBIN:MU / KERBIN:RADIUS^2.
     LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
     LOCK gforce TO accvec:MAG / g.
@@ -69,14 +65,14 @@ PRINT "coasting to apogee".
 
 PRINT "start warp".
 set kuniverse:timewarp:rate to 100.
-UNTIL SHIP:ALTITUDE > 72000 {
+UNTIL SHIP:ALTITUDE > 62000 {
     WAIT 0.1.
 }
 kuniverse:timewarp:cancelwarp().
 PRINT "stop warp".
 
 
-WHEN SHIP:ALTITUDE > 75000 THEN {
+WHEN SHIP:ALTITUDE > 65000 THEN {
     SET dthrott TO 0.05 * (5.0 - gforce).
     LOCK STEERING TO R(0,0,0) + HEADING(90,00).
     PRINT "circularizing".
