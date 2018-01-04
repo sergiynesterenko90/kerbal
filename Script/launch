@@ -17,45 +17,26 @@ STAGE.
 PRINT "launch".
 
 
-WHEN SHIP:ALTITUDE > 2000 THEN {
-    SET g TO KERBIN:MU / KERBIN:RADIUS^2.
-    LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
-    LOCK gforce TO accvec:MAG / g.
-    LOCK dthrott TO 0.05 * (2.0 - gforce).
+SET g TO KERBIN:MU / KERBIN:RADIUS^2.
+LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
+LOCK gforce TO accvec:MAG / g.
 
-    LOCK heading_offset TO 90 - (0.001 * SHIP:ALTITUDE).
+LOCK target_accel TO 1.5 + 0.0001 * SHIP:ALTITUDE.
+LOCK dthrott TO 0.05 * (target_accel - gforce).
 
-    LOCK STEERING TO R(0,0,180) + HEADING(90,heading_offset).
+LOCK heading_offset TO 90 - (0.001 * SHIP:ALTITUDE).
+
+LOCK STEERING TO R(0,0,180) + HEADING(90,heading_offset).
 
 
-    WHEN SHIP:ALTITUDE > 10000 THEN {
-        LOCK dthrott TO 0.05 * (3.0 - gforce).
-
-        LOCK STEERING TO R(0,0,180) + HEADING(90,heading_offset).
-
-        WHEN SHIP:ALTITUDE > 20000 THEN {
-            LOCK dthrott TO 0.05 * (5.0 - gforce).
-
-            LOCK STEERING TO R(0,0,180) + HEADING(90,heading_offset).
-
-            WHEN SHIP:ALTITUDE > 30000 THEN {
-                LOCK dthrott TO 0.05 * (6.0 - gforce).
-
-                LOCK STEERING TO R(0,0,180) + HEADING(90,heading_offset).
-
-                WHEN SHIP:APOAPSIS > 80000 AND SHIP:ALTITUDE < 75000 THEN {
-                    SET thrott TO 0.
-                    SET dthrott TO 0.
-
-                    LOCK STEERING TO R(0,0,180) + HEADING(90,00).
-                }
-
-            }
-        }
-    }
+UNTIL SHIP:VERTICALSPEED > 200 {
+    WAIT 0.1.
 }
 
+
 UNTIL SHIP:APOAPSIS > 80000 {
+    PRINT target_accel.
+
     SET thrott to thrott + dthrott.
     WAIT 0.1.
 }
